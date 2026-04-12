@@ -1,0 +1,126 @@
+To run this YACC + LEX program in Kali Linux, follow these simple step-by-step instructions. 💻🐧
+
+1️⃣ Install Required Packages
+
+First install bison, flex, and gcc (if not already installed).
+
+Open Terminal and run:
+
+sudo apt update
+sudo apt install bison flex gcc
+
+These tools are needed to compile YACC (Bison) and LEX (Flex) programs.
+
+2️⃣ Create the YACC File
+
+Create a file with .y extension.
+
+nano parser.y
+
+Paste this code:
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();
+int yyerror(const char *s);
+%}
+
+%token ID
+
+%%
+E : T E1 { printf("E -> T E'\n"); } ;
+
+E1 : '+' T E1 { printf("E' -> + T E'\n"); }
+   | { printf("E' -> epsilon\n"); }
+   ;
+
+T : F { printf("T -> F\n"); } ;
+
+F : '(' E ')' { printf("F -> ( E )\n"); }
+  | ID { printf("F -> id\n"); }
+  ;
+%%
+
+int main() {
+    printf("Enter expression:\n");
+    yyparse();
+    printf("Parsing Successful!\n");
+    return 0;
+}
+
+int yyerror(const char *s) {
+    printf("Parsing Failed\n");
+    return 0;
+}
+
+
+Save and exit:
+CTRL + O → Enter → CTRL + X
+
+3️⃣ Create the LEX File
+
+Create another file with .l extension.
+
+nano parser.l
+
+Paste this code:
+
+%{
+#include "parser.tab.h"
+%}
+
+%%
+[a-zA-Z]+   return ID;
+[ \t\n]     ;
+"+"         return '+';
+"("         return '(';
+")"         return ')';
+.           return yytext[0];
+%%
+
+Save and exit.
+
+4️⃣ Generate Parser Code (Bison)
+bison -d parser.y
+
+This creates:
+
+parser.tab.c
+parser.tab.h
+5️⃣ Generate Lexer Code (Flex)
+flex parser.l
+
+This creates:
+
+lex.yy.c
+6️⃣ Compile the Program
+gcc parser.tab.c lex.yy.c -o parser -lfl
+
+This generates an executable file parser.
+
+7️⃣ Run the Program
+./parser
+8️⃣ Give Input
+
+Example:
+
+Enter expression:
+a+b
+
+Output(ctrl+D):
+
+E -> T E'
+T -> F
+F -> id
+E' -> + T E'
+T -> F
+F -> id
+E' -> epsilon
+Parsing Successful!
+
+✅ Important Tips
+
+.y and .l files must have the same base name (like parser.y and parser.l).
+Use no spaces in input like a+b if errors occur.
