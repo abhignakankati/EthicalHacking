@@ -1,0 +1,187 @@
+ 1) Vulnerability Scanning with Nessus
+ Aim:
+
+To identify vulnerabilities in systems, services, and network devices using Nessus.
+
+ Step-by-Step Procedure
+Step 1: Download Nessus
+Open browser.
+Visit Tenable Nessus website.
+Download Nessus for your OS (Windows/Linux).
+Step 2: Install Nessus
+Run the installer file.
+Welcome screen appears → Click Next.
+Accept License Agreement.
+Click Next.
+Choose install location (or keep default).
+Click Install.
+Wait until installation completes.
+Step 3: Open Nessus
+
+After installation, browser opens automatically.
+
+If not, open manually:
+
+https://localhost:8834
+
+For remote system:
+
+https://<IP_Address>:8834
+
+Example:
+
+https://192.168.1.10:8834
+Step 4: Setup Nessus
+Create account.
+Enter activation code (if required).
+Wait for plugin updates.
+Step 5: Create Scan
+Click New Scan
+Select Basic Network Scan
+Enter:
+Scan Name
+Target IP Address
+
+Example:
+
+192.168.1.10
+Click Save
+Step 6: Start Scan
+Click Launch button.
+Wait for scan completion.
+Step 7: View Results
+
+Check:
+
+Critical vulnerabilities
+Medium vulnerabilities
+Low vulnerabilities
+Recommended fixes
+ Result:
+
+Successfully scanned target system using Nessus.
+
+ 2) Web Application Assessment with Nikto
+ Aim:
+
+To find web server misconfigurations and vulnerabilities.
+
+ Step-by-Step Procedure
+Step 1: Install Nikto
+sudo apt update
+sudo apt install nikto
+Step 2: Check Help Menu
+nikto -Help
+
+ Displays available options.
+
+Step 3: Basic Scan
+nikto -h http://example.com
+
+ Scans website for vulnerabilities.
+
+Step 4: HTTPS Scan
+nikto -h https://example.com -ssl
+
+ Scans secure HTTPS website.
+
+Step 5: Tuning Scan
+nikto -h http://example.com -Tuning 1,2
+
+ Runs selected test categories only.
+
+Step 6: Save Output Report
+nikto -h http://example.com -o report.txt
+
+ Saves results in report.txt file.
+
+Step 7: Analyze Results
+
+Look for:
+
+Server misconfiguration
+Default pages
+Sensitive files
+Directory listing
+Outdated software
+ Result:
+
+Successfully assessed web application using Nikto.
+
+ 3) Web Application Assessment using Burp Suite
+ Aim:
+
+To intercept requests and test web application security.
+
+ Step-by-Step Procedure
+Step 1: Install Burp Suite
+Download Burp Suite Community Edition.
+Run installer.
+Complete installation.
+Step 2: Start Burp Suite
+Open Burp Suite.
+Select:
+New Temporary Project
+Use Burp Defaults
+Click Start Burp
+Step 3: Configure Proxy
+
+Go to:
+
+Proxy → Options
+
+Check running proxy:
+
+127.0.0.1:8080
+
+ Means Burp proxy is active.
+
+Step 4: Enable Intercept
+
+Go to:
+
+Proxy → Intercept
+
+Click:
+
+Intercept is Off
+
+Change to:
+
+Intercept is On
+Step 5: Configure Browser Proxy
+
+Set browser manual proxy:
+
+IP: 127.0.0.1
+Port: 8080
+Step 6: Browse Target Website
+
+Example:
+
+http://testphp.vulnweb.com
+
+Burp captures requests.
+
+Step 7: Forward / Modify Request
+Intercepted request appears.
+Modify parameters if needed.
+Click:
+Forward
+Step 8: Send to Repeater
+
+Right-click request → Send to Repeater.
+
+Use for manual testing.
+
+Step 9: Scan Manually
+
+Check for:
+
+SQL Injection
+XSS
+Authentication flaws
+Parameter tampering
+ Result:
+
+Successfully tested web application using Burp Suite.
