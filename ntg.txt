@@ -1,4 +1,4 @@
-Exercise 5: Demonstrate DoS Attack
+4-: Demonstrate DoS Attack
 Aim
 To perform Denial of Service (DoS) attack using different tools.
 Theory (Write Short in Exam)
@@ -80,7 +80,7 @@ Result
 Conclusion
 DoS attacks overload systems and deny service to legitimate users.
 
-Exercise 6: Install Rootkit Detectors
+5-: Install Rootkit Detectors
 Aim
 To install and analyze rootkit detection tools.
 Theory (Short)
@@ -117,7 +117,8 @@ Rootkit detection tools help identify hidden malware and improve system security
 DoS → hping3 / msf / slowloris
 rkhunter → scan rootkits
 chkrootkit → detect malware
-Exercise 7: Password Capturing & Cracking – Complete Execution
+
+6-: Password Capturing & Cracking – Complete Execution
 PART 1: FTP Password Cracking using Hydra
 Step 1: Start Machines
 • Open Kali Linux
@@ -213,7 +214,7 @@ Important Notes (Exam Points)
 • John → converts files to hash
 • Wordlist → key factor in cracking
 
-Exercise : Demonstrate Various Exploits of Metasploit
+7-: Demonstrate Various Exploits of Metasploit
 Aim
 To perform exploitation on vulnerable services using Metasploit Framework.
 Requirements
@@ -321,7 +322,7 @@ sessions -i
 Here is your Exercise 9 in a clean, step-by-step format (with commands + small explanations) — perfect for
 exam writing + lab execution
 
-Exercise 9: Passive Scanning, Active Scanning, Cookies Extraction & Session Hijacking
+9-: Passive Scanning, Active Scanning, Cookies Extraction & Session Hijacking
 Aim
 To perform passive scanning, active scanning, cookies extraction, and session hijacking using security tools.
 Requirements
