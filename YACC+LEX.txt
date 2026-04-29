@@ -1,6 +1,47 @@
-To run this YACC + LEX program in Kali Linux, follow these simple step-by-step instructions. 💻🐧
+%{
+#include <stdio.h>
+%}
 
-1️⃣ Install Required Packages
+%%
+auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while {
+    printf("%s is a keyword\n",yytext);
+}
+[0-9]+ {
+    printf("%s is a number\n",yytext);
+}
+[a-zA-Z]+ {
+    printf("%s is a word\n",yytext);
+}
+. {
+}
+%%
+
+int main()
+{
+    printf("Enter : ");
+    yylex();
+    return 0;
+}
+
+int yywrap()
+{
+    return 1;
+}
+output:
+Enter input: int a =10;
+Keyword: int
+Identifier: a
+Operator/Special Symbol: =
+Number: 10
+Operator/Special Symbol: ;
+
+
+
+
+
+To run this YACC + LEX program in Kali Linux, follow these simple step-by-step instructions. 
+
+1️ Install Required Packages
 
 First install bison, flex, and gcc (if not already installed).
 
@@ -11,7 +52,7 @@ sudo apt install bison flex gcc
 
 These tools are needed to compile YACC (Bison) and LEX (Flex) programs.
 
-2️⃣ Create the YACC File
+2️ Create the YACC File
 
 Create a file with .y extension.
 
@@ -59,7 +100,7 @@ int yyerror(const char *s) {
 Save and exit:
 CTRL + O → Enter → CTRL + X
 
-3️⃣ Create the LEX File
+3️ Create the LEX File
 
 Create another file with .l extension.
 
@@ -82,27 +123,27 @@ Paste this code:
 
 Save and exit.
 
-4️⃣ Generate Parser Code (Bison)
+4️ Generate Parser Code (Bison)
 bison -d parser.y
 
 This creates:
 
 parser.tab.c
 parser.tab.h
-5️⃣ Generate Lexer Code (Flex)
+5️ Generate Lexer Code (Flex)
 flex parser.l
 
 This creates:
 
 lex.yy.c
-6️⃣ Compile the Program
+6️ Compile the Program
 gcc parser.tab.c lex.yy.c -o parser -lfl
 
 This generates an executable file parser.
 
-7️⃣ Run the Program
+7️ Run the Program
 ./parser
-8️⃣ Give Input
+8️ Give Input
 
 Example:
 
@@ -119,8 +160,3 @@ T -> F
 F -> id
 E' -> epsilon
 Parsing Successful!
-
-✅ Important Tips
-
-.y and .l files must have the same base name (like parser.y and parser.l).
-Use no spaces in input like a+b if errors occur.
